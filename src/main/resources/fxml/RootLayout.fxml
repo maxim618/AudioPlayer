@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        prefHeight="650.0"
+        prefWidth="1040.0"
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.trackio.view.RootLayoutController"
+        stylesheets="@../css/Trackio.css">
+</BorderPane>
