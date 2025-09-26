@@ -23,6 +23,12 @@
 ```bash
 mvn clean javafx:run
 ```
+### Если запускаешь на Windows/Linux/Mac, можно явно указать платформу:
+```bash
+mvn clean javafx:run -Djavafx.platform=win
+mvn clean javafx:run -Djavafx.platform=linux
+mvn clean javafx:run -Djavafx.platform=mac
+```
 
 ### 📜 Лицензия
 
