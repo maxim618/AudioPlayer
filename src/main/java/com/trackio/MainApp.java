@@ -1,6 +1,7 @@
 package com.trackio;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.trackio.model.TrackList;
 import javafx.application.Application;
@@ -37,7 +38,7 @@ public class MainApp extends Application {
 
         // Set the application icon
         this.primaryStage.getIcons().add(
-                new Image(MainApp.class.getResource("/img/icon.png").toExternalForm())
+                new Image(Objects.requireNonNull(MainApp.class.getResource("/img/icon.png")).toExternalForm())
         );
 
         initRootLayout();
