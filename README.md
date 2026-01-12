@@ -16,23 +16,17 @@
 ### Требования
 - **Java 17+**
 - **Maven** 3.6+
-- Подключение зависимостей JavaFX (через Maven Central)
 
 ### Сборка и запуск
 ```bash
 mvn clean javafx:run
 ```
-### Если запускаешь на Windows/Linux/Mac, можно явно указать платформу:
+### Windows/Linux/Mac:
 ```bash
 mvn clean javafx:run -Djavafx.platform=win
 mvn clean javafx:run -Djavafx.platform=linux
 mvn clean javafx:run -Djavafx.platform=mac
 ```
-### Почему нужно указывать операционную систему для JavaFX?
-
-JavaFX использует нативные библиотеки (графику, медиа, WebView и т. д.), которые отличаются для Windows, Linux и macOS.  
-Поэтому в `pom.xml` указывается *classifier* (например, `win`, `linux`, `mac`), чтобы Maven скачивал зависимости именно для вашей операционной системы.
-
 ###  Лицензия
 
 - Проект распространяется под лицензией MIT
