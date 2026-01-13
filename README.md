@@ -24,7 +24,11 @@ mvn clean javafx:run
 ### Windows/Linux/Mac:
 ```bash
 mvn clean javafx:run -Djavafx.platform=win
+````
+```bash
 mvn clean javafx:run -Djavafx.platform=linux
+```
+```bash
 mvn clean javafx:run -Djavafx.platform=mac
 ```
 ###  Лицензия
