@@ -7,6 +7,6 @@
         prefWidth="1040.0"
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="com.trackio.view.RootLayoutController"
+        fx:controller="com.playmy.view.RootLayoutController"
         stylesheets="@../css/Trackio.css">
 </BorderPane>

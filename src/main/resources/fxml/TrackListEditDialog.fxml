@@ -6,7 +6,7 @@
 
 <AnchorPane fx:id="dialogAnchorPane" prefHeight="130.0" prefWidth="389.0" styleClass="background"
             stylesheets="@../css/Trackio.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.trackio.view.TrackListEditDialogController">
+            fx:controller="com.playmy.view.TrackListEditDialogController">
     <children>
         <GridPane layoutX="-16.0" layoutY="31.0" prefHeight="68.0" prefWidth="360.0" AnchorPane.leftAnchor="10.0"
                   AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">

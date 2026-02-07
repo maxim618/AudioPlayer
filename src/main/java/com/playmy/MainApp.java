@@ -1,9 +1,9 @@
-package com.trackio;
+package com.playmy;
 
 import java.io.IOException;
 import java.util.Objects;
 
-import com.trackio.model.TrackList;
+import com.playmy.model.TrackList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import com.trackio.view.TrackListEditDialogController;
-import com.trackio.view.PlayerController;
+import com.playmy.view.TrackListEditDialogController;
+import com.playmy.view.PlayerController;
 import javafx.stage.StageStyle;
 
 public class MainApp extends Application {

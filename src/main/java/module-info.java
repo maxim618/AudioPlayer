@@ -1,4 +1,4 @@
-module com.trackio {
+module com.playmy {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.media;
@@ -8,10 +8,10 @@ module com.trackio {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.fontawesome;
 
-    exports com.trackio;
-    exports com.trackio.util;
-    exports com.trackio.model;
-    exports com.trackio.view;
+    exports com.playmy;
+    exports com.playmy.util;
+    exports com.playmy.model;
+    exports com.playmy.view;
 
-    opens com.trackio.view to javafx.fxml;
+    opens com.playmy.view to javafx.fxml;
 }
