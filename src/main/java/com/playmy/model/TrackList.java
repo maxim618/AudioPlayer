@@ -1,4 +1,4 @@
-package com.trackio.model;
+package com.playmy.model;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
