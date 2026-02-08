@@ -1,3 +1,4 @@
+![CI](https://github.com/maxim618/AudioPlayer/actions/workflows/ci.yml/badge.svg)
 # JavaFX Player
 
 Простой аудиоплеер на **JavaFX**.  
