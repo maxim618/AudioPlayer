@@ -45,9 +45,9 @@ public class TrackListUtil {
      * @return List
      */
     public static ObservableList<TrackList> getAll() {
-        
+
         ObservableList<TrackList> trackLists = FXCollections.observableArrayList();
-        
+
         for(int index = 1; index <= getTrackListsNumber(); index++) {
             String listName = prefs.get(TRACKLIST_NAME + index, null);
             String listPath = prefs.get(TRACKLIST_PATH + index, null);
@@ -63,21 +63,45 @@ public class TrackListUtil {
      *
      */
     public static void deleteAll() {
-        for(int index = 0; index < getTrackListsNumber(); index++) {
-            prefs.remove(TRACKLIST_NAME + index);
-            prefs.remove(TRACKLIST_PATH + index);
+            int trackListNumber = getTrackListsNumber();
+            for (int index = 1; index <= trackListNumber; index++) {
+                prefs.remove(TRACKLIST_NAME + index);
+                prefs.remove(TRACKLIST_PATH + index);
+                prefs.putInt(TRACKLIST_NUMBER, 0);
+            }
             prefs.putInt(TRACKLIST_NUMBER, 0);
         }
-    }
     
     /**
      * Remove single tracklist.
      */
     public static void delete(TrackList trackList) {
-        prefs.remove(TRACKLIST_NAME + trackList.getId().getValue());
-        prefs.remove(TRACKLIST_PATH + trackList.getId().getValue());
-        prefs.putInt(TRACKLIST_NUMBER, prefs.getInt(TRACKLIST_NUMBER, 0) - 1);
-        
+
+
+        int trackListNumber = getTrackListsNumber();
+        int id = trackList.getId().getValue();
+        if (id <= 0 || id > trackListNumber) {
+            return;
+        }
+
+        for (int index = id; index < trackListNumber; index++) {
+            String nextName = prefs.get(TRACKLIST_NAME + (index + 1), null);
+            String nextPath = prefs.get(TRACKLIST_PATH + (index + 1), null);
+            if (nextName != null) {
+                prefs.put(TRACKLIST_NAME + index, nextName);
+            } else {
+                prefs.remove(TRACKLIST_NAME + index);
+            }
+            if (nextPath != null) {
+                prefs.put(TRACKLIST_PATH + index, nextPath);
+            } else {
+                prefs.remove(TRACKLIST_PATH + index);
+            }
+        }
+
+        prefs.remove(TRACKLIST_NAME + trackListNumber);
+        prefs.remove(TRACKLIST_PATH + trackListNumber);
+        prefs.putInt(TRACKLIST_NUMBER, trackListNumber - 1);
     }
     
     /**
