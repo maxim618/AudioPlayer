@@ -109,7 +109,7 @@
                                    AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="102.55101776123047"
                                    AnchorPane.topAnchor="15.0">
                             <image>
-                                <Image url="@../img/logo-trackio.png"/>
+                                <Image url="@../img/logo-playmy.png"/>
                             </image>
                         </ImageView>
                         <ProgressBar fx:id="progressBar" layoutX="15.0" layoutY="535.0" maxHeight="16.0" minHeight="6.0"
