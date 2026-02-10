@@ -1,5 +1,5 @@
 ![CI](https://github.com/maxim618/AudioPlayer/actions/workflows/ci.yml/badge.svg)
-# JavaFX Player
+# PLAYMY 
 
 Простой аудиоплеер на **JavaFX**.  
 Поддерживает воспроизведение треков и управление плейлистом.
