@@ -24,10 +24,19 @@ public class TrackListUtil {
      * Save tracklist in preferences.
      */
     public static void saveTrackList(TrackList trackList) {
-        int trackListNumber = getTrackListsNumber() + 1;
-        prefs.put(TRACKLIST_NAME + trackListNumber, trackList.getName().getValue());
-        prefs.put(TRACKLIST_PATH + trackListNumber, trackList.getPath().getValue());
-        prefs.putInt(TRACKLIST_NUMBER, trackListNumber);
+        int currentTrackListNumber = getTrackListsNumber();
+        int id = trackList.getId().getValue();
+
+        if (id > 0 && id <= currentTrackListNumber) {
+            prefs.put(TRACKLIST_NAME + id, trackList.getName().getValue());
+            prefs.put(TRACKLIST_PATH + id, trackList.getPath().getValue());
+            return;
+        }
+
+        int nextTrackListNumber = currentTrackListNumber + 1;
+        prefs.put(TRACKLIST_NAME + nextTrackListNumber, trackList.getName().getValue());
+        prefs.put(TRACKLIST_PATH + nextTrackListNumber, trackList.getPath().getValue());
+        prefs.putInt(TRACKLIST_NUMBER, nextTrackListNumber);
     }
     
     /**
