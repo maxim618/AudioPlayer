@@ -283,7 +283,6 @@ public class PlayerController {
                     boolean okClicked = mainApp.showTrackListDialog(selectedTrackList);
                     if (okClicked) {
                         TrackListUtil.saveTrackList(selectedTrackList);
-                        observableTrackListsView.add(selectedTrackList);
                     }
                     Platform.runLater(() -> {
                         TrackListUtil.refreshList(trackListView);
@@ -380,13 +379,13 @@ public class PlayerController {
         // Add progressbar click listener to change song position
         progressBar.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY){
-                Bounds b1 = progressBar.getLayoutBounds();
-                double mouseX = event.getSceneX();
-                double percent = (((b1.getMinX() + mouseX ) * 100) / b1.getMaxX());
-                percent -= 2;
-                double totalDurationMillis = mediaPlayer.getTotalDuration().toMillis();
-                double seek = (totalDurationMillis * percent) / 100;
-                mediaPlayer.seek(Duration.millis(seek));
+                seekByMousePosition(event, mediaPlayer);
+            }
+        });
+
+        progressBar.setOnMouseDragged((MouseEvent event) -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                seekByMousePosition(event, mediaPlayer);
             }
         });
         
@@ -395,7 +394,9 @@ public class PlayerController {
                  Duration oldValue, Duration newValue) -> {
             double currentTimeMillis = mediaPlayer.getCurrentTime().toMillis();
             double totalDurationMillis = mediaPlayer.getTotalDuration().toMillis();
-            progressBar.setProgress(1.0 * currentTimeMillis / totalDurationMillis);
+            if (totalDurationMillis > 0) {
+                progressBar.setProgress(1.0 * currentTimeMillis / totalDurationMillis);
+            }
             
             // Set time count in label
             double currentTimeSeconds = mediaPlayer.getCurrentTime().toSeconds();
@@ -427,6 +428,23 @@ public class PlayerController {
             playButtonIcon.setIconSize(25);
             playButton.setStyle("-fx-padding: 5 22 5 24;");
         });
+    }
+
+    private void seekByMousePosition(MouseEvent event, MediaPlayer mediaPlayer) {
+        Duration totalDuration = mediaPlayer.getTotalDuration();
+        if (totalDuration == null || totalDuration.isUnknown() || totalDuration.lessThanOrEqualTo(Duration.ZERO)) {
+            return;
+        }
+
+        Bounds progressBarBounds = progressBar.getLayoutBounds();
+        if (progressBarBounds.getWidth() <= 0) {
+            return;
+        }
+
+        double x = event.getX();
+        double width = progressBarBounds.getWidth();
+        double progress = Math.min(1, Math.max(0, x / width));
+        mediaPlayer.seek(totalDuration.multiply(progress));
     }
     
     /*

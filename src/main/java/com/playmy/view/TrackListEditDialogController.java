@@ -85,6 +85,9 @@ public class TrackListEditDialogController {
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle("Select a folder with music");
             File selectedDirectory = chooser.showDialog(dialogStage);
+            if (selectedDirectory == null) {
+                return;
+            }
             trackList.setPath(new SimpleStringProperty(selectedDirectory.toString()));
             trackList.setName(new SimpleStringProperty(nameField.getText()));
             okClicked = true;
