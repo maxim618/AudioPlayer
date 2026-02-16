@@ -91,6 +91,20 @@
                                text="00:00" textAlignment="CENTER" AnchorPane.bottomAnchor="83.0"
                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 
+                        <ImageView fx:id="albumImageViewLeft" fitHeight="122.0" fitWidth="122.0" layoutX="0.0"
+                                   layoutY="346.0" onMousePressed="#handlePrevTrack" opacity="0.7" pickOnBounds="true"
+                                   preserveRatio="true" AnchorPane.bottomAnchor="182.0">
+                            <image>
+                                <Image url="@../img/noalbumart.png"/>
+                            </image>
+                            <effect>
+                                <Reflection/>
+                            </effect>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ImageView>
+
                         <ImageView fx:id="albumImageViewRight" fitHeight="122.0" fitWidth="122.0" layoutX="212.0"
                                    layoutY="346.0" onMousePressed="#handleNextTrack" opacity="0.7" pickOnBounds="true"
                                    preserveRatio="true" AnchorPane.bottomAnchor="182.0">
