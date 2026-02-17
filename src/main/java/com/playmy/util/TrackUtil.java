@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.playmy.model.Track;
 import com.playmy.model.TrackList;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener.Change;
 import javafx.collections.ObservableList;
@@ -19,119 +18,132 @@ import javafx.scene.media.Media;
  * Utilities to deal with Tracks.
  */
 public class TrackUtil {
-    
-    public static final List<String> SUPPORTED_FILE_EXTENSIONS = Arrays.asList(".mp3");
-    
-/*
+
+    public static final List<String> SUPPORTED_FILE_EXTENSIONS =
+            Arrays.asList(".mp3");
+
+    @FunctionalInterface
+    public interface MediaFactory {
+        Media create(String mediaUrl);
+    }
+    /**
      Get all tracklists stored in user preferences
-*/
-public static ObservableList<Track> getAll(TrackList trackList, TableView trackTable) {
+    */
+    public static ObservableList<Track> getAll(TrackList trackList,
+                                               TableView trackTable) {
+        return getAll(trackList, trackTable, Media::new);
+    }
+
+    public static ObservableList<Track> getAll(TrackList trackList,
+                                               TableView trackTable,
+                                               MediaFactory mediaFactory) {
 
         ObservableList<Track> tracks = FXCollections.observableArrayList();
 
-        File dir = new File(trackList.getPath().getValue());
+        File dir = new File(trackList.getPath());
         if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println("Cannot find audio source directory: " + dir + " please supply a directory as a command line argument");
+            System.out.println("Cannot find audio source directory: " + dir);
+            return tracks;
         }
 
-        for (String file : dir.list((File dir1, String name) -> {
-            for(String ext : SUPPORTED_FILE_EXTENSIONS) {
-                if (name.endsWith(ext)) {
-                    return true;
-                }
-            }
-            return false;
-        }))
-        {
-            String fileURL = dir + "\\" + file;
-            String cleanURL = cleanURL(fileURL);
-            String mediaURL = "file:///" + cleanURL;
+        String[] files = dir.list((d, name) ->
+                SUPPORTED_FILE_EXTENSIONS.stream()
+                        .anyMatch(name::endsWith));
+
+        if (files == null) return tracks;
+
+        for (String file : files) {
+
+            File audioFile = new File(dir, file);
 
             Track track = new Track();
-            Media media = new Media(mediaURL);
-            media.getMetadata().addListener((Change<? extends String,
-                    ? extends Object> ch) -> {
-                if (ch.wasAdded()) {
-                    handleMetadata(ch.getKey(), ch.getValueAdded(), (Track) track);
-                    if(track.getArtist() == null || track.getArtist().getValue().equals("")) {
-                        track.setArtist(new SimpleStringProperty("Unknown"));
-                    }
-                    if(track.getAlbum() == null || track.getAlbum().getValue().equals("")) {
-                        track.setAlbum(new SimpleStringProperty("Unknown"));
-                    }
-                    if(track.getYear() == null || track.getYear().getValue().equals("")) {
-                        track.setYear(new SimpleStringProperty("Unknown"));
-                    }
-                    if(track.getTitle() == null || track.getTitle().getValue().equals("")) {
-                        track.setTitle(new SimpleStringProperty(track.getFileName().getValue().replace(".mp3", "")));
-                    }
-                    TrackUtil.refreshTable(trackTable);
-                }
-            });
+            track.setFileName(file);
+            track.setPath(audioFile.getAbsolutePath());
+
+            track.setTitle(file.replace(".mp3", ""));
+            track.setArtist("Unknown");
+            track.setAlbum("Unknown");
+            track.setYear("Unknown");
+
+            String mediaURL = audioFile.toURI().toString();
+            Media media = mediaFactory.create(mediaURL);
+
+            if (media != null) {
+                media.getMetadata().addListener(
+                        (Change<? extends String, ? extends Object> ch) -> {
+                            if (ch.wasAdded()) {
+                                handleMetadata(ch.getKey(),
+                                        ch.getValueAdded(),
+                                        track);
+
+                                refreshTable(trackTable);
+                            }
+                        });
+            }
+
             track.setMedia(media);
-            track.setFileName(new SimpleStringProperty(file));
-            track.setPath(new SimpleStringProperty(dir + "/" + file));
             tracks.add(track);
         }
 
         return tracks;
     }
-
     /**
      * Extract all metadata information
      */
-    public static void handleMetadata(String key, Object value, Track track) {
-        if(key.equals("album")) {
-            if(value.toString().equals("")) {
-                track.setAlbum(new SimpleStringProperty("Unknown"));
-            } else {
-                track.setAlbum(new SimpleStringProperty(value.toString()));
-            }
-        } else if(key.equals("artist") || key.equals("album artist")) {
-            if(value.toString().equals("")) {
-                track.setArtist(new SimpleStringProperty("Unknown"));
-            } else {
-                track.setArtist(new SimpleStringProperty(value.toString()));
-            }
-        } else if(key.equals("title")) {
-            if(value.toString().equals("")) {
-                track.setTitle(new SimpleStringProperty(track.getFileName().getValue().replace(".mp3", "")));
-            } else {
-                track.setTitle(new SimpleStringProperty(value.toString()));
-            }
-        } else if(key.equals("year")) {
-            if(value.toString().equals("")) {
-                track.setYear(new SimpleStringProperty("Unknown"));
-            } else {
-                track.setYear(new SimpleStringProperty(value.toString()));
-            }
-        } else if(key.equals("image")) {
-            track.setImage((Image) value);
+    public static void handleMetadata(String key,
+                                      Object value,
+                                      Track track) {
+
+        if (value == null) return;
+
+        String val = value.toString().trim();
+
+        switch (key) {
+
+            case "album":
+                track.setAlbum(val.isEmpty() ? "Unknown" : val);
+                break;
+
+            case "artist":
+            case "album artist":
+                track.setArtist(val.isEmpty() ? "Unknown" : val);
+                break;
+
+            case "title":
+                track.setTitle(val.isEmpty()
+                        ? track.getFileName().replace(".mp3", "")
+                        : val);
+                break;
+
+            case "year":
+                track.setYear(val.isEmpty() ? "Unknown" : val);
+                break;
+
+            case "image":
+                track.setImage((Image) value);
+                break;
         }
     }
-    
     /**
      * Refresh table columns util
      */
     public static void refreshTable(TableView table) {
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            TableColumn tableColumn = ((TableColumn) (table.getColumns().get(i)));
-            if(tableColumn.isVisible()) {
-                tableColumn.setVisible(false);
-                tableColumn.setVisible(true);
+        for (Object colObj : table.getColumns()) {
+            TableColumn<?, ?> column = (TableColumn<?, ?>) colObj;
+            if (column.isVisible()) {
+                column.setVisible(false);
+                column.setVisible(true);
             }
         }
     }
-
-/*
-   Clean characters of URL
-*/
-private static String cleanURL(String url) {
+    /**
+     * Clean characters of URL
+     */
+    private static String cleanURL(String url) {
         url = url.replace("\\", "/");
         url = url.replaceAll(" ", "%20");
         url = url.replace("[", "%5B");
         url = url.replace("]", "%5D");
         return url;
     }
-    
 }

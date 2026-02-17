@@ -3,28 +3,27 @@ package com.playmy.view;
 import com.playmy.model.TrackList;
 import com.playmy.util.EffectUtil;
 import com.playmy.util.TrackListUtil;
+import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import java.io.File;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 
-/*
+/**
  * Dialog to edit details of a tracklist or add new one.
  */
 public class TrackListEditDialogController {
 
     @FXML
     private TextField nameField;
-    
+
     @FXML
     private AnchorPane dialogAnchorPane;
-    
+
     @FXML
     private Button deleteTrackListButton;
 
@@ -32,42 +31,40 @@ public class TrackListEditDialogController {
     private TrackList trackList;
     private boolean okClicked = false;
 
-    /*
-     * Initializes the controller class. This method is automatically called
-     * after the fxml file has been loaded.
+    /**
+     * Add drag listener to background
      */
     @FXML
     private void initialize() {
-        // Add drag listener to background
         EffectUtil.addDragListeners(dialogAnchorPane);
     }
 
-    /*
+    /**
      * Sets the stage of this dialog.
      */
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
-    /*
+    /**
      * Sets the tracklist to be edited in the dialog.
      */
     public void setTrackList(TrackList trackList) {
         this.trackList = trackList;
-        nameField.setText(trackList.getName().getValue());
-        if(trackList.getId().getValue() == 0) {
+        nameField.setText(trackList.getName());
+        if(trackList.getId() == 0) {
             deleteTrackListButton.setDisable(true);
         }
     }
 
-    /*
+    /**
      * Returns true if the user clicked OK, false otherwise.
      */
     public boolean isOkClicked() {
         return okClicked;
     }
-    
-    /*
+
+    /**
      * Delete tracklist.
      */
     @FXML
@@ -76,7 +73,7 @@ public class TrackListEditDialogController {
         dialogStage.close();
     }
 
-    /*
+    /**
      * Called when the user clicks ok.
      */
     @FXML
@@ -85,14 +82,17 @@ public class TrackListEditDialogController {
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle("Select a folder with music");
             File selectedDirectory = chooser.showDialog(dialogStage);
-            trackList.setPath(new SimpleStringProperty(selectedDirectory.toString()));
-            trackList.setName(new SimpleStringProperty(nameField.getText()));
+            if (selectedDirectory == null) {
+                return;
+            }
+            trackList.setPath(selectedDirectory.toString());
+            trackList.setName(nameField.getText());
             okClicked = true;
             dialogStage.close();
         }
     }
 
-    /*
+    /**
      * Called when the user clicks cancel.
      */
     @FXML
@@ -100,7 +100,7 @@ public class TrackListEditDialogController {
         dialogStage.close();
     }
 
-    /*
+    /**
      * Validates the user input in the text fields.
      */
     private boolean isInputValid() {

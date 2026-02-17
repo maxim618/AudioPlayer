@@ -11,13 +11,14 @@ import javafx.scene.media.Media;
  */
 public class Track {
 
-    private StringProperty fileName;
-    private StringProperty path;
+    private final StringProperty fileName = new SimpleStringProperty("");
+    private final StringProperty path = new SimpleStringProperty("");
+    private final StringProperty album = new SimpleStringProperty("Unknown");
+    private final StringProperty artist = new SimpleStringProperty("Unknown");
+    private final StringProperty title = new SimpleStringProperty("");
+    private final StringProperty year = new SimpleStringProperty("");
+    private final StringProperty author = new SimpleStringProperty("");
     private Media media;
-    private StringProperty album;
-    private StringProperty artist;
-    private StringProperty title;
-    private StringProperty year;
     private Image image;
 
     /**
@@ -31,23 +32,28 @@ public class Track {
      * Constructor with some initial data.
      */
     public Track(String fileName, String filePath, Media media) {
-        this.fileName = new SimpleStringProperty(fileName);
-        this.path = new SimpleStringProperty(filePath);
+        this.fileName.set(fileName);
+        this.path.set(filePath);
         this.media = media;
     }
+
 
     /**
      * @return the fileName
      */
-    public StringProperty getFileName() {
-        return fileName;
+    public String getFileName() {
+        return fileName.get();
     }
 
     /**
      * @param fileName the fileName to set
      */
-    public void setFileName(StringProperty fileName) {
-        this.fileName = fileName;
+    public void setFileName(String fileName) {
+        this.fileName.set(fileName);
+    }
+
+    public StringProperty fileNameProperty() {
+        return fileName;
     }
 
     /**
@@ -64,75 +70,95 @@ public class Track {
         this.media = media;
     }
 
-    /**
-     * @return the path
-     */
-    public StringProperty getPath() {
+    public String getPath() {
+        return path.get();
+    }
+
+    public void setPath(String value) {
+        path.set(value);
+    }
+
+    public StringProperty pathProperty() {
         return path;
     }
 
     /**
-     * @param path the path to set
+     * @return album
      */
-    public void setPath(StringProperty path) {
-        this.path = path;
-    }
-    
-
-    /**
-     * @return the album
-     */
-    public StringProperty getAlbum() {
-        return album;
+    public String getAlbum() {
+        return album.get();
     }
 
     /**
      * @param album the album to set
      */
-    public void setAlbum(StringProperty album) {
-        this.album = album;
+    public void setAlbum(String album) {
+        this.album.set(album == null || album.isBlank() ? "Unknown" : album);
+    }
+
+    public StringProperty albumProperty() {
+        return album;
     }
 
     /**
      * @return the artist
      */
-    public StringProperty getArtist() {
-        return artist;
+    public String getArtist() {
+        return artist.get();
     }
 
     /**
      * @param artist the artist to set
      */
-    public void setArtist(StringProperty artist) {
-        this.artist = artist;
+    public void setArtist(String artist) {
+        this.artist.set(artist == null || artist.isBlank() ? "Unknown" : artist);
+    }
+
+    public StringProperty artistProperty() {
+        return artist;
     }
 
     /**
      * @return the title
      */
-    public StringProperty getTitle() {
-        return title;
+    public String getTitle() {
+        return title.get();
     }
 
     /**
      * @param title the title to set
      */
-    public void setTitle(StringProperty title) {
-        this.title = title;
+    public void setTitle(String title) {
+        this.title.set(title == null || title.isBlank() ? fileName.get() : title);
+    }
+    public StringProperty titleProperty() {
+        return title;
+    }
+
+    public void setAuthor (String author) {
+        this.author.set(author == null || author.isBlank() ? "Unknown" : author);
+    }
+
+    public StringProperty authorProperty() {
+        return author;
     }
 
     /**
      * @return the year
      */
-    public StringProperty getYear() {
-        return year;
+    public String getYear() {
+        return year.get();
     }
 
     /**
      * @param year the year to set
      */
-    public void setYear(StringProperty year) {
-        this.year = year;
+    public void setYear(String year) {
+        this.year.set(year);
+    }
+
+    public StringProperty yearProperty() {
+        return year;
     }
 
     /**
@@ -148,7 +174,5 @@ public class Track {
     public void setImage(Image image) {
         this.image = image;
     }
-    
-    
 
 }
