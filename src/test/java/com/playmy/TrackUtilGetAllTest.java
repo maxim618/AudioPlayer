@@ -5,6 +5,7 @@ import com.playmy.model.TrackList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.playmy.util.TrackUtil;
 import javafx.collections.ObservableList;
@@ -18,6 +19,7 @@ class TrackUtilGetAllTest {
     @Test
     void getAllFiltersSupportedFilesAndBuildsTracks() throws IOException {
         Path tempDir = Files.createTempDirectory("trackutil");
+
         Files.createFile(tempDir.resolve("song.mp3"));
         Files.createFile(tempDir.resolve("notes.txt"));
         Files.createFile(tempDir.resolve("ambient.wav"));
@@ -26,9 +28,13 @@ class TrackUtilGetAllTest {
         ObservableList<Track> tracks = TrackUtil.getAll(trackList, null, mediaUrl -> null);
 
         assertEquals(1, tracks.size());
+
         Track track = tracks.get(0);
         assertEquals("song.mp3", track.getFileName());
-        assertEquals(tempDir + "\\song.mp3", track.getPath());
+
+        Path expectedPath = tempDir.resolve("song.mp3");
+        assertEquals(expectedPath, Paths.get(track.getPath()));
+
         assertTrue(track.getMedia() == null);
     }
 }
