@@ -54,8 +54,8 @@ class TrackListUtilTest {
 
         assertEquals(1, TrackListUtil.getTrackListsNumber());
         assertEquals(1, result.size());
-        assertEquals("Morning Updated", result.get(0).getName().getValue());
-        assertEquals("/music/morning-new", result.get(0).getPath().getValue());
+        assertEquals("Morning Updated", result.get(0).getName());
+        assertEquals("/music/morning-new", result.get(0).getPath());
     }
 
     @Test
