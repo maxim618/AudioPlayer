@@ -3,13 +3,13 @@ package com.playmy.view;
 import com.playmy.MainApp;
 import com.playmy.model.Track;
 import com.playmy.model.TrackList;
+import com.playmy.util.TrackListUtil;
+import com.playmy.util.EffectUtil;
+import com.playmy.util.TrackUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import com.playmy.util.TrackListUtil;
-import com.playmy.util.EffectUtil;
-import com.playmy.util.TrackUtil;
 import java.io.InputStream;
 import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
@@ -49,7 +49,7 @@ public class PlayerController {
     @FXML
     private ListView<TrackList> trackListView;
     private ObservableList<TrackList> observableTrackListsView;
-    
+
     //Tracks table
     @FXML
     private TableView<Track> trackTableView;
@@ -62,16 +62,13 @@ public class PlayerController {
     private TableColumn<Track, String> albumColumn;
     @FXML
     private TableColumn<Track, String> yearColumn;
-    
+
     //Toolbar
     @FXML
     private ToolBar mainToolBar;
     @FXML
     private ImageView maximizeImageView;
-    
-    //Window vars
-    private boolean maximized = false;
-    
+
     //Player info
     @FXML
     private ProgressBar progressBar;
@@ -84,7 +81,6 @@ public class PlayerController {
     private ImageView albumImageViewRight;
     @FXML
     public ImageView trackioLogo;
-
     @FXML
     private Label titleLabel;
     @FXML
@@ -92,22 +88,23 @@ public class PlayerController {
     @FXML
     private Label timeLabel;
 
-    // Reference to the main application
-    private MainApp mainApp;
-  
-    //Initialize player and current media
-    private MediaPlayer player;
-    private Track currentTrack;
-    private Track prevTrack;
-    private Track nextTrack;
-    private Media currentMedia;
-    
     //Player controls
     @FXML
     private Button playButton;
     @FXML
     private FontIcon playButtonIcon;
 
+    // Reference to the main application
+    private MainApp mainApp;
+
+    //Initialize player and current media
+    private MediaPlayer player;
+    private Track currentTrack;
+    private Track prevTrack;
+    private Track nextTrack;
+
+    //Window vars
+    private boolean maximized = false;
 
     /*
      * The constructor. The constructor is called before the initialize()
@@ -122,21 +119,20 @@ public class PlayerController {
      */
     @FXML
     private void initialize() {
-        
+
         // Add drag listener to toolbar
         EffectUtil.addDragListeners(mainToolBar);
-        
+
         // Initialize trackslists and tracks
         setupTrackListView();
         setupTrackTableView();
-        
-        // Handle maximize window on double click on toolbar
+
+        // Handle maximize window on double-click on toolbar
         mainToolBar.setOnMouseClicked((MouseEvent click) -> {
             if (click.getClickCount() == 2) {
                 handleMaximize();
             }
         });
-
     }
 
     /*
@@ -148,7 +144,7 @@ public class PlayerController {
 
     /**
      * Trigger play and pause button
-     * 
+     *
      */
     @FXML
     private void handlePlayTrigger() {
@@ -171,7 +167,7 @@ public class PlayerController {
     private void handleNextTrack() {
         if(nextTrack != null) playTrack(nextTrack);
     }
-    
+
     /*
      * Called when the user clicks on the prev song button.
      */
@@ -193,7 +189,7 @@ public class PlayerController {
             observableTrackListsView.add(tempTrackList);
         }
     }
-    
+
     /*
      * Custom close button
      */
@@ -202,7 +198,7 @@ public class PlayerController {
         Platform.exit();
         System.exit(0);
     }
-    
+
     /*
      * Custom mazimize button
      */
@@ -214,18 +210,18 @@ public class PlayerController {
             mainApp.getPrimaryStage().setMaxWidth(1040);
             mainApp.getPrimaryStage().setMaxHeight(650);
             mainApp.getPrimaryStage().centerOnScreen();
-            
+
             InputStream minimizeImage = PlayerController.class.getResourceAsStream("/img/top-square.png");
             maximizeImageView.setImage(new Image(minimizeImage));
         } else {
             maximized = true;
             mainApp.getPrimaryStage().setMaximized(true);
-            
+
             InputStream maximizeImage = PlayerController.class.getResourceAsStream("/img/top-shrink.png");
             maximizeImageView.setImage(new Image(maximizeImage));
         }
     }
-    
+
     /*
      * Custom minimize button
      */
@@ -233,7 +229,7 @@ public class PlayerController {
     private void handleMinimize() {
         mainApp.getPrimaryStage().setIconified(true);
     }
-    
+
     /*
      * Show alert with credits
      */
@@ -252,10 +248,10 @@ public class PlayerController {
      * Setup tracklist cells, observers and actions
      */
     private void setupTrackListView() {
-        
+
         observableTrackListsView = TrackListUtil.getAll();
         trackListView.setItems(observableTrackListsView);
-        
+
         // Set custom cell view
         trackListView.setCellFactory((ListView<TrackList> p) -> {
             ListCell<TrackList> cell = new ListCell<TrackList>() {
@@ -266,14 +262,14 @@ public class PlayerController {
                         FontIcon playIcon = new FontIcon(FontAwesome.PLAY);
                         playIcon.getStyleClass().add("tracklist-play-icon"); // <-- вместо setStyle
                         setGraphic(playIcon);
-                        setText("  " + trackList.getName().getValue());
+                        setText("  " + trackList.getName());
 
                     }
                 }
             };
             return cell;
         });
-        
+
         // Handle edit tracklist on double click
         trackListView.setOnMouseClicked((MouseEvent click) -> {
             if (click.getClickCount() == 2) {
@@ -291,26 +287,26 @@ public class PlayerController {
                 }
             }
         });
-         
+
         // Listen for selection changes and show the tracklist tracks
         trackListView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showTrackListDetails(newValue));
     }
-    
+
     /*
      * Setup tracks cells, observers and actions
      */
     private void setupTrackTableView() {
         // Initialize the tracks table with the columns
         titleColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getTitle());
+                cellData -> cellData.getValue().titleProperty());
         authorColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getArtist());
+                cellData -> cellData.getValue().artistProperty());
         albumColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getAlbum());
+                cellData -> cellData.getValue().albumProperty());
         yearColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getYear());
-        
+                cellData -> cellData.getValue().yearProperty());
+
         trackTableView.setRowFactory( tv -> {
             TableRow<Track> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -321,9 +317,9 @@ public class PlayerController {
             });
             return row ;
         });
-        
+
     }
-    
+
     /*
      * Show tracklist tracks inside a tracklist
      */
@@ -332,17 +328,21 @@ public class PlayerController {
             observableTracksView = TrackUtil.getAll(trackList, trackTableView);
             trackTableView.setItems(observableTracksView);
         });
-        
+
         Platform.runLater(() -> {
             TrackUtil.refreshTable(trackTableView);
         });
     }
-    
+
     /*
      * Play track on player.
      */
     private void playTrack(Track track) {
-        
+        //This is a protection against accidental NPE
+        if (track == null) return;
+        if (observableTracksView == null || observableTracksView.isEmpty()) {
+            return;
+        }
         // Set next, current and previous track
         currentTrack = track;
         int totalTracks = observableTracksView.size();
@@ -353,29 +353,38 @@ public class PlayerController {
         else prevTrack = observableTracksView.get(totalTracks-1);
         if(nextTrackNumber < totalTracks) nextTrack = observableTracksView.get(nextTrackNumber);
         else nextTrack = observableTracksView.get(0);
-        
+
         // Set selected item in tracktable
         trackTableView.getSelectionModel().select(currentTrack);
-        
+
         // Play track and set media info
-        if (player != null) {
-            player.stop();
-            player = null;
+        Media currentMedia = currentTrack.getMedia();
+        if (currentMedia == null) {
+            return;
         }
-        currentMedia = currentTrack.getMedia();
+        if (player != null) {
+            if (progressChangeListener != null) {
+                player.currentTimeProperty().removeListener(progressChangeListener);
+            }
+            player.stop();
+            player.dispose();
+        }
+
         player = new MediaPlayer(currentMedia);
-        player.play();
         setCurrentlyPlaying(player);
         setMediaInfo(currentTrack);
+
+        player.play();
+
     }
-    
+
     /*
      * Set all listeners to UI on play.
      */
     private void setCurrentlyPlaying(MediaPlayer mediaPlayer) {
         mediaPlayer.seek(Duration.ZERO);
         progressBar.setProgress(0);
-        
+
         // Add progressbar click listener to change song position
         progressBar.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY){
@@ -388,16 +397,16 @@ public class PlayerController {
                 seekByMousePosition(event, mediaPlayer);
             }
         });
-        
+
         // Add progressbar listener to show current song percent
         progressChangeListener = (ObservableValue<? extends Duration> observableValue,
-                 Duration oldValue, Duration newValue) -> {
+                                  Duration oldValue, Duration newValue) -> {
             double currentTimeMillis = mediaPlayer.getCurrentTime().toMillis();
             double totalDurationMillis = mediaPlayer.getTotalDuration().toMillis();
             if (totalDurationMillis > 0) {
                 progressBar.setProgress(1.0 * currentTimeMillis / totalDurationMillis);
             }
-            
+
             // Set time count in label
             double currentTimeSeconds = mediaPlayer.getCurrentTime().toSeconds();
             int minutes = (int) (currentTimeSeconds % 3600) / 60;
@@ -405,23 +414,23 @@ public class PlayerController {
             String formattedMinutes = String.format("%02d", minutes);
             String formattedSeconds = String.format("%02d", seconds);
             timeLabel.setText(formattedMinutes + ":" + formattedSeconds);
-            
+
         };
         mediaPlayer.currentTimeProperty().addListener(progressChangeListener);
-        
+
         //Add player action on finish
         player.setOnEndOfMedia(() -> {
             player.currentTimeProperty().removeListener(progressChangeListener);
             handleNextTrack();
         });
-        
+
         // Add player action on pause
         player.setOnPaused(() -> {
             playButtonIcon.setIconCode(FontAwesome.PLAY);
             playButtonIcon.setIconSize(30);
             playButton.setStyle("-fx-padding: 5 22 5 29;");
         });
-        
+
         // Add player action on playing
         player.setOnPlaying(() -> {
             playButtonIcon.setIconCode(FontAwesome.PAUSE);
@@ -446,53 +455,53 @@ public class PlayerController {
         double progress = Math.min(1, Math.max(0, x / width));
         mediaPlayer.seek(totalDuration.multiply(progress));
     }
-    
+
     /*
      * Set song info on UI and image transitions.
      */
     private void setMediaInfo(Track track) {
-        titleLabel.setText(track.getTitle().getValue());
-        Tooltip titleTooltip = new Tooltip(track.getTitle().getValue() + "\r" + track.getArtist().getValue().toUpperCase());
+
+        titleLabel.setText(track.getTitle());
+        Tooltip titleTooltip = new Tooltip(track.getTitle() + "\r" + track.getArtist().toUpperCase());
         titleTooltip.setTextAlignment(TextAlignment.CENTER);
         titleLabel.setTooltip(titleTooltip);
-        artistLabel.setText(track.getArtist().getValue().toUpperCase());
-        
+        artistLabel.setText(track.getArtist().toUpperCase());
+
         InputStream defaultAlbumStream = PlayerController.class.getResourceAsStream("/img/noalbumart.png");
         Image defaultAlbumImage = new Image(defaultAlbumStream);
         InputStream defaultAlbumStreamLeft = PlayerController.class.getResourceAsStream("/img/noalbumart.png");
         Image defaultAlbumImageLeft = new Image(defaultAlbumStreamLeft);
         InputStream defaultAlbumStreamRight = PlayerController.class.getResourceAsStream("/img/noalbumart.png");
         Image defaultAlbumImageRight = new Image(defaultAlbumStreamRight);
-        
+
         if(track.getImage() == null) {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.fadeTransition(albumImageView, defaultAlbumImage);
             transitionImageView.play();
         } else {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.fadeTransition(albumImageView, track.getImage());
             transitionImageView.play();
         }
-        
+
         if(nextTrack == null || nextTrack.getImage() == null) {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.translateTransition(albumImageViewRight, defaultAlbumImageLeft, 0, 400);
             transitionImageView.play();
         } else {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.translateTransition(albumImageViewRight, nextTrack.getImage(), 0, 400);
             transitionImageView.play();
         }
-        
+
         if(prevTrack == null || prevTrack.getImage() == null) {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.translateTransition(albumImageViewLeft, defaultAlbumImageRight, 0, -400);
             transitionImageView.play();
         } else {
-            SequentialTransition transitionImageView = 
+            SequentialTransition transitionImageView =
                     EffectUtil.translateTransition(albumImageViewLeft, prevTrack.getImage(), 0, -400);
             transitionImageView.play();
         }
-
     }
 }

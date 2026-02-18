@@ -38,8 +38,8 @@ class TrackListUtilTest {
 
         assertEquals(1, TrackListUtil.getTrackListsNumber());
         assertEquals(1, result.size());
-        assertEquals("Favorites", result.get(0).getName().getValue());
-        assertEquals("/music/favorites", result.get(0).getPath().getValue());
+        assertEquals("Favorites", result.get(0).getName());
+        assertEquals("/music/favorites", result.get(0).getPath());
     }
 
 
@@ -73,8 +73,8 @@ class TrackListUtilTest {
 
         assertEquals(1, TrackListUtil.getTrackListsNumber());
         assertEquals(1, result.size());
-        assertEquals("Evening", result.get(0).getName().getValue());
-        assertEquals(1, result.get(0).getId().getValue());
+        assertEquals("Evening", result.get(0).getName());
+        assertEquals(1, result.get(0).getId());
     }
 
     @Test
