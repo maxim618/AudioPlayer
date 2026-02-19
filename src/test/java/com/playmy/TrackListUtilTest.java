@@ -42,6 +42,22 @@ class TrackListUtilTest {
         assertEquals("/music/favorites", result.get(0).getPath());
     }
 
+
+    @Test
+    void saveTrackListUpdatesExistingTrackListById() {
+        TrackListUtil.saveTrackList(new TrackList(0, "Morning", "/music/morning"));
+
+        TrackList updated = new TrackList(1, "Morning Updated", "/music/morning-new");
+        TrackListUtil.saveTrackList(updated);
+
+        ObservableList<TrackList> result = TrackListUtil.getAll();
+
+        assertEquals(1, TrackListUtil.getTrackListsNumber());
+        assertEquals(1, result.size());
+        assertEquals("Morning Updated", result.get(0).getName());
+        assertEquals("/music/morning-new", result.get(0).getPath());
+    }
+
     @Test
     void deleteRemovesAndCompactsTrackLists() {
         TrackList first = new TrackList(0, "Morning", "/music/morning");
