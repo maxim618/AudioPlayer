@@ -22,7 +22,7 @@
         <app.vendor>Maksim</app.vendor>
     </properties>
 
-    <!-- ================= DEPENDENCIES ================= -->
+    <!--  DEPENDENCIES  -->
 
     <dependencies>
 
@@ -71,7 +71,7 @@
 
     </dependencies>
 
-    <!-- ================= OS PROFILES ================= -->
+    <!--  OS PROFILES  -->
 
     <profiles>
 
@@ -114,7 +114,7 @@
             </properties>
         </profile>
 
-        <!-- ================= RELEASE PROFILE ================= -->
+        <!--  RELEASE PROFILE  -->
 
         <profile>
             <id>release</id>
@@ -168,6 +168,12 @@
                                         <argument>--name</argument>
                                         <argument>${app.name}</argument>
 
+                                        <argument>--app-version</argument>
+                                        <argument>${app.version}</argument>
+
+                                        <argument>--vendor</argument>
+                                        <argument>${app.vendor}</argument>
+
                                         <argument>--input</argument>
                                         <argument>${project.build.directory}</argument>
 
@@ -179,6 +185,9 @@
 
                                         <argument>--runtime-image</argument>
                                         <argument>${project.build.directory}/image</argument>
+
+                                        <argument>--icon</argument>
+                                        <argument>${project.basedir}/src/main/resources/icon.ico</argument>
 
                                         <argument>--dest</argument>
                                         <argument>${project.basedir}/release</argument>
