@@ -6,7 +6,7 @@
 
     <groupId>com.playmy</groupId>
     <artifactId>audioplayer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -17,9 +17,11 @@
         <javafx.version>21</javafx.version>
         <ikonli.version>12.3.1</ikonli.version>
         <main.class>com.playmy.MainApp</main.class>
-        <app.name>Playmy</app.name>
-        <app.version>1.0.0</app.version>
-        <app.vendor>Maksim</app.vendor>
+        <app.name>PlayMy</app.name>
+        <app.vendor>
+            Maksim B.
+            PlayMy Audio
+        </app.vendor>
     </properties>
 
     <!--  DEPENDENCIES  -->
@@ -122,7 +124,51 @@
             <build>
                 <plugins>
 
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>3.7.1</version>
 
+                        <executions>
+                            <execution>
+                                <id>make-zip</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <finalName>PlayMy-${project.version}-windows</finalName>
+                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <descriptors>
+                                        <descriptor>src/assembly/release.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-jar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/app</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>${project.build.finalName}.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <plugin>
                         <groupId>org.openjfx</groupId>
@@ -146,7 +192,6 @@
                         </executions>
                     </plugin>
 
-
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -169,13 +214,13 @@
                                         <argument>${app.name}</argument>
 
                                         <argument>--app-version</argument>
-                                        <argument>${app.version}</argument>
+                                        <argument>${project.version}</argument>
 
                                         <argument>--vendor</argument>
                                         <argument>${app.vendor}</argument>
 
                                         <argument>--input</argument>
-                                        <argument>${project.build.directory}</argument>
+                                        <argument>${project.build.directory}/app</argument>
 
                                         <argument>--main-jar</argument>
                                         <argument>${project.build.finalName}.jar</argument>
